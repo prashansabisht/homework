@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Create Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script defer src="theme.js"></script>
+  <script defer src="blog.js"></script>
+</head>
+<body>
+  <header>
+    <h1>✍ Write a Blog</h1>
+    <button id="theme-toggle">🌙</button>
+  </header>
+
+  <nav>
+    <a href="blog.html">🏠 Home</a>
+    <a href="view.html">📖 View Blogs</a>
+    <a href="Screenshot (109).png">Project Output</a>
+  </nav>
+
+  <main class="container animate">
+    <label>Blog Title:</label>
+    <input type="text" id="title" placeholder="Enter blog title" />
+
+    <label>Markdown Content:</label>
+    <textarea id="content" placeholder="Write using markdown..."></textarea>
+
+    <button class="btn" id="save">✅ Save Blog</button>
+
+    <h2>🔎 Live Preview</h2>
+    <div id="preview" class="blog-post"></div>
+  </main>
+</body>
+</html>

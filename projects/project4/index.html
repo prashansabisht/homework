@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>To-Do List</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #6dd5ed, #2193b0);
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .todo-container {
+      background: #fefefe;
+      border-radius: 20px;
+      padding: 30px 40px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      width: 70%;
+      padding: 10px;
+      border: 2px solid #aaa;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      outline: none;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 10px;
+      background: #2979ff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    button:hover {
+      background: #1565c0;
+    }
+
+    .task {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 8px 0;
+      background-color: #e3f2fd;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .task span {
+      flex-grow: 1;
+      text-align: left;
+    }
+
+    .task button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      margin-left: 10px;
+    }
+
+    .filters button.active {
+      background-color: #1565c0;
+    }
+  </style>
+</head>
+<body>
+  <div class="todo-container">
+    <h1>📝 To-Do List</h1>
+    <input type="text" id="taskInput" placeholder="Enter your task..."/>
+    <button onclick="addTask()">Add Task</button>
+    <div class="filters">
+      <button id="allBtn" onclick="displayTasks('all')">All</button>
+      <button id="completedBtn" onclick="displayTasks('completed')">Completed</button>
+      <button id="pendingBtn" onclick="displayTasks('pending')">Pending</button>
+    </div>
+    <div id="taskList"></div>
+  </div>
+
+  <script>
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    let currentFilter = "all";
+
+    function saveTasks() {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+
+    function addTask() {
+      const input = document.getElementById("taskInput");
+      const text = input.value.trim();
+      if (text) {
+        tasks.push({ text, status: "pending" });
+        saveTasks();
+        input.value = "";
+        displayTasks(currentFilter);
+      }
+    }
+
+    function deleteTask(index) {
+      tasks.splice(index, 1);
+      saveTasks();
+      displayTasks(currentFilter);
+    }
+
+    function toggleStatus(index) {
+      tasks[index].status = tasks[index].status === "completed" ? "pending" : "completed";
+      saveTasks();
+      displayTasks(currentFilter);
+    }
+
+    function displayTasks(filter = "all") {
+      currentFilter = filter;
+
+      // Active button styling
+      document.getElementById("allBtn").classList.remove("active");
+      document.getElementById("completedBtn").classList.remove("active");
+      document.getElementById("pendingBtn").classList.remove("active");
+      if (filter === "all") document.getElementById("allBtn").classList.add("active");
+      else if (filter === "completed") document.getElementById("completedBtn").classList.add("active");
+      else if (filter === "pending") document.getElementById("pendingBtn").classList.add("active");
+
+      const taskList = document.getElementById("taskList");
+      taskList.innerHTML = "";
+
+      tasks.forEach((task, index) => {
+        if (filter === "completed" && task.status !== "completed") return;
+        if (filter === "pending" && task.status !== "pending") return;
+
+        const taskItem = document.createElement("div");
+        taskItem.className = "task";
+        taskItem.innerHTML = `
+          <span style="text-decoration: ${task.status === "completed" ? "line-through" : "none"};">
+            ${task.text}
+          </span>
+          <button onclick="toggleStatus(${index})" title="Mark Complete/Undo">✔</button>
+          <button onclick="deleteTask(${index})" title="Delete Task">🗑</button>
+        `;
+        taskList.appendChild(taskItem);
+      });
+    }
+
+    // Load all tasks on page load
+    window.onload = () => displayTasks();
+  </script>
+</body>
+</html>

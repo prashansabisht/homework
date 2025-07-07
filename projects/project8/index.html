@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MyShop - E-Commerce</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #000000;
+      --card: #f3f3f3;
+    }
+    [data-theme='dark'] {
+      --bg: #181818;
+      --text: #ffffff;
+      --card: #2c2c2c;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: 0.3s;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      background: var(--card);
+      align-items: center;
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      background: dodgerblue;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      padding: 2rem;
+    }
+
+    .product {
+      background: var(--card);
+      border-radius: 10px;
+      overflow: hidden;
+      padding: 1rem;
+      text-align: center;
+      transition: 0.3s ease;
+    }
+
+    .product img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+      transition: 0.3s ease;
+    }
+
+    .product img:hover {
+      transform: scale(1.1);
+    }
+
+    .cart {
+      position: fixed;
+      right: 0;
+      top: 0;
+      background: var(--card);
+      width: 300px;
+      height: 100vh;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+      padding: 1rem;
+      overflow-y: auto;
+      display: none;
+      flex-direction: column;
+    }
+
+    .cart-item {
+      margin: 0.5rem 0;
+    }
+
+    .modal, .login-modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content, .login-content {
+      background: var(--card);
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+    }
+
+    .top-right-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .search-filter {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0 2rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: var(--card);
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body data-theme="light">
+
+  <header>
+    <h2>🛍 MyShop</h2>
+    <div class="top-right-buttons">
+      <button class="btn" onclick="toggleTheme()">🌓</button>
+      <button class="btn" onclick="toggleCart()">🛒</button>
+      <button class="btn" onclick="toggleLogin()">👤</button>
+       <a href="Screenshot (110).png">Project Output</a>
+    </div>
+  </header>
+
+  <div class="search-filter">
+    <input type="text" placeholder="Search products..." id="search" oninput="renderProducts()" />
+    <select id="category" onchange="renderProducts()">
+      <option value="">All</option>
+      <option value="Phone">Phone</option>
+      <option value="Watch">Watch</option>
+      <option value="Laptop">Laptop</option>
+  
+    </select>
+  </div>
+
+  <section class="grid" id="products"></section>
+
+  <div class="cart" id="cart">
+    <h3>Your Cart</h3>
+    <div id="cartItems"></div>
+    <p><b>Total:</b> ₹<span id="cartTotal">0</span></p>
+    <button class="btn" onclick="checkout()">Checkout</button>
+  </div>
+
+  <div class="modal" id="productModal">
+    <div class="modal-content" id="productDetail"></div>
+  </div>
+
+  <div class="login-modal" id="loginModal">
+    <div class="login-content">
+      <h3>Login / Register</h3>
+      <input type="text" placeholder="Username"/>
+      <input type="password" placeholder="Password"/>
+      <button class="btn" onclick="toggleLogin()">Submit</button>
+    </div>
+  </div>
+
+  <footer>© 2025 MyShop — E-Commerce Frontend by You 💙</footer>
+
+  <script>
+    const products = [
+      { id: 1, title: "iPhone 15", category: "Phone", price: 80000, image: "https://m.media-amazon.com/images/I/71d7rfSl0wL.AC_UF1000,1000_QL80.jpg" },
+      { id: 2, title: "Samsung Watch", category: "Watch", price: 12000, image: "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6280/6280405_sd.jpg" },
+      { id: 3, title: "HP Laptop", category: "Laptop", price: 55000, image: "https://th.bing.com/th/id/OIP.UrNhYo6ddyCE0_grOrDJCwHaFJ?rs=1&pid=ImgDetMain" },
+      { id: 4, title: "Apple Smartwatch", category: "Watch", price: 2999, image: "https://cdn.hiptoro.com/wp-content/uploads/2019/04/Apple-Smart-Watch-Series-5.jpg" },
+      { id: 5, title: "Realme Narzo", category: "Phone", price: 11999, image: "https://www.enter.co/wp-content/uploads/2021/07/Screen-Shot-2021-07-27-at-12.51.23-PM-768x432.png" }
+    ];
+
+    let cart = [];
+
+    function renderProducts() {
+      const search = document.getElementById("search").value.toLowerCase();
+      const category = document.getElementById("category").value;
+      const productEl = document.getElementById("products");
+      productEl.innerHTML = "";
+
+      const filtered = products.filter(p =>
+        p.title.toLowerCase().includes(search) &&
+        (category === "" || p.category === category)
+      );
+
+      filtered.forEach(p => {
+        const div = document.createElement("div");
+        div.className = "product";
+        div.innerHTML = `
+          <img src="${p.image}" alt="${p.title}" onclick="viewDetail(${p.id})" />
+          <h4>${p.title}</h4>
+          <p>₹${p.price}</p>
+          <button class="btn" onclick="addToCart(${p.id})">Add to Cart</button>
+        `;
+        productEl.appendChild(div);
+      });
+    }
+
+    function addToCart(id) {
+      const product = products.find(p => p.id === id);
+      const found = cart.find(item => item.id === id);
+      if (found) {
+        found.qty++;
+      } else {
+        cart.push({ ...product, qty: 1 });
+      }
+      updateCart();
+    }
+
+    function updateCart() {
+      const cartItems = document.getElementById("cartItems");
+      const total = document.getElementById("cartTotal");
+      cartItems.innerHTML = "";
+      let sum = 0;
+      cart.forEach(item => {
+        sum += item.qty * item.price;
+        cartItems.innerHTML += `
+          <div class="cart-item">
+            ${item.title} x ${item.qty} = ₹${item.qty * item.price}
+          </div>
+        `;
+      });
+      total.innerText = sum;
+    }
+
+    function toggleCart() {
+      const cartDiv = document.getElementById("cart");
+      cartDiv.style.display = cartDiv.style.display === "flex" ? "none" : "flex";
+    }
+
+    function viewDetail(id) {
+      const product = products.find(p => p.id === id);
+      const modal = document.getElementById("productModal");
+      const content = document.getElementById("productDetail");
+      content.innerHTML = `
+        <h3>${product.title}</h3>
+        <img src="${product.image}" style="width:100%; border-radius:10px;" />
+        <p>Category: ${product.category}</p>
+        <p>Price: ₹${product.price}</p>
+        <button class="btn" onclick="addToCart(${product.id})">Add to Cart</button>
+        <button class="btn" onclick="closeModal()">Close</button>
+      `;
+      modal.style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("productModal").style.display = "none";
+    }
+
+    function toggleTheme() {
+      const body = document.body;
+      const current = body.getAttribute("data-theme");
+      body.setAttribute("data-theme", current === "dark" ? "light" : "dark");
+    }
+
+    function toggleLogin() {
+      const login = document.getElementById("loginModal");
+      login.style.display = login.style.display === "flex" ? "none" : "flex";
+    }
+
+    function checkout() {
+      alert("Thanks for shopping! 💙");
+      cart = [];
+      updateCart();
+      toggleCart();
+    }
+
+    window.onclick = e => {
+      if (e.target.className === "modal") closeModal();
+      if (e.target.className === "login-modal") toggleLogin();
+    };
+
+    renderProducts();
+  </script>
+</body>
+</html>

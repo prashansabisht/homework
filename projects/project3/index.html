@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Beautiful Resume Builder</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="main-container">
+    <div class="form-container">
+      <h1>🌟 Resume Builder</h1>
+      <form id="resumeForm">
+        <h2>Personal Info</h2>
+        <input type="text" id="name" placeholder="Full Name" required />
+        <input type="email" id="email" placeholder="Email Address" required />
+        <input type="text" id="phone" placeholder="Phone Number" required />
+
+        <h2>Education</h2>
+        <input type="text" id="degree" placeholder="Degree" required />
+        <input type="text" id="school" placeholder="School/College" required />
+        <input type="text" id="year" placeholder="Year of Graduation" required />
+
+        <h2>Experience</h2>
+        <textarea id="experience" rows="4" placeholder="Your Experience..."></textarea>
+
+        <button type="button" onclick="generateResume()">Preview Resume</button>
+
+        <a href="Screenshot (105).png">Project Output</a>
+      </form>
+    </div>
+
+    <div class="preview-container">
+      <h2>📄 Resume Preview</h2>
+      <div id="resumePreview" class="resume-preview"></div>
+      <button class="download-btn" onclick="downloadPDF()">Download as PDF</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

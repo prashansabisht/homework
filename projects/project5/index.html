@@ -1,0 +1,94 @@
+
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Management Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>📊 Student Management Dashboard</h1>
+    <form id="studentForm">
+      <input type="text" name="name" placeholder="Name" required />
+      <input type="text" name="regno" placeholder="Reg No" required />
+      <input type="text" name="dept" placeholder="Department" required />
+      <input type="number" name="year" placeholder="Year" required />
+      <input type="number" name="marks" placeholder="Marks" required />
+      <button type="submit">Add Student</button>
+      <a href="Screenshot (107).png">Project Output</a>
+    </form>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Reg No</th>
+          <th>Department</th>
+          <th>Year</th>
+          <th>Marks</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="studentTableBody"></tbody>
+    </table>
+  </div>  <script>
+    const form = document.getElementById("studentForm");
+    const tbody = document.getElementById("studentTableBody");
+    let students = JSON.parse(localStorage.getItem("students")) || [];
+
+    function renderTable() {
+      tbody.innerHTML = "";
+      students.forEach((student, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${student.name}</td>
+          <td>${student.regno}</td>
+          <td>${student.dept}</td>
+          <td>${student.year}</td>
+          <td>${student.marks}</td>
+          <td>
+            <button onclick="editStudent(${index})">Edit</button>
+            <button onclick="deleteStudent(${index})">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function saveToStorage() {
+      localStorage.setItem("students", JSON.stringify(students));
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const student = Object.fromEntries(formData.entries());
+      students.push(student);
+      saveToStorage();
+      renderTable();
+      form.reset();
+    });
+
+    window.editStudent = (index) => {
+      const student = students[index];
+      form.name.value = student.name;
+      form.regno.value = student.regno;
+      form.dept.value = student.dept;
+      form.year.value = student.year;
+      form.marks.value = student.marks;
+      students.splice(index, 1);
+      saveToStorage();
+      renderTable();
+    };
+
+    window.deleteStudent = (index) => {
+      if (confirm("Are you sure?")) {
+        students.splice(index, 1);
+        saveToStorage();
+        renderTable();
+      }
+    };
+
+    renderTable();
+  </script></body>
+</html>

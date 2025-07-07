@@ -1,0 +1,47 @@
+/* style.css */
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+.hero {
+  background: linear-gradient(135deg, #007bff, #6f42c1);
+  height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 2s ease-in-out;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  animation: slideDown 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.about-bg {
+  background: linear-gradient(120deg, #6f42c1, #007bff);
+  min-height: 90vh;
+  padding-top: 60px;
+  animation: fadeIn 1.5s ease-in-out;
+}
+.gallery-bg {
+  background: linear-gradient(120deg, #007bff, #6f42c1);
+}
+.events-bg {
+  background: linear-gradient(to right, #007bff, #6f42c1);
+  min-height: 100vh;
+}
+.members-bg {
+  background: linear-gradient(to right, #6f42c1, #007bff);
+}
+.contact-bg {
+  background: linear-gradient(to right, #0d6efd, #6f42c1);
+}
