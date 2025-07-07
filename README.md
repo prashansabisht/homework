@@ -192,25 +192,3 @@ A beautiful blog website with markdown support and full blog management features
 
 ---
 
-## 🛍 Project 8: E-Commerce Product Listing Page
-
-### Description:
-A fully functional single-page e-commerce layout with product display, filtering, cart, and more.
-
-### Features:
-- Product cards with real images
-- Product details popup
-- Dark mode toggle
-- Add to cart and checkout
-- Search and filter products
-- Stylish animations
-
-### Technologies Used:
-- HTML
-- CSS
-- JavaScript
-
-### How to Use:
-Open index.html, browse products, use filters/search, add to cart, and simulate checkout.
-
----
